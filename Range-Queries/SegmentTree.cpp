@@ -15,7 +15,7 @@ struct Node {
     }
 
     void change(ll x) {
-        sum += x;
+        sum = x;
     }
 };
 
@@ -86,7 +86,7 @@ struct SegTree {
 
         int mid = (lx + rx) / 2;
         Node lf = get(l, r,2 * ni + 1,lx,mid);
-        Node ri = get(r,l,2 * ni + 2,mid,rx);
+        Node ri = get(l,r,2 * ni + 2,mid,rx);
 
         return merge(lf,ri);
     }
@@ -97,8 +97,8 @@ struct SegTree {
 };
 
 void solve() {
-    int n;
-    cin >> n;
+    int n,m;
+    cin >> n >> m;
     vector<ll> a(n);
 
     for (int i = 0; i < n; i++) {
@@ -108,14 +108,20 @@ void solve() {
     SegTree st = SegTree(n);
     st.init(a);
 
-    int q;
-    cin >> q;
-    while (q--) {
-        int l, r;
-        cin >> l >> r;
-        l--;
-
-        cout << st.get(l, r) << "\n";
+    while (m--) {
+        int t;
+        cin >> t;
+        if (t == 1) {
+            int idx;
+            ll val;
+            cin >> idx>>val;
+            st.set(idx,val);
+        }
+        else {
+            int l,r;
+            cin >> l >> r;
+            cout<<st.get(l,r)<<endl;
+        }
     }
 }
 
