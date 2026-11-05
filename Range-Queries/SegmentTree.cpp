@@ -4,17 +4,17 @@ using ll = long long;
 
 
 struct Node {
-    int sum;
+    ll sum;
 
     Node() {
         sum = 0;
     }
 
-    Node(int x) {
+    Node(ll x) {
         sum = x;
     }
 
-    void change(int x) {
+    void change(ll x) {
         sum += x;
     }
 };
@@ -36,7 +36,7 @@ struct SegTree {
         return ans;
     }
 
-    void init(vector<int> &a, int ni, int lx, int rx) {
+    void init(vector<ll> &a, int ni, int lx, int rx) {
         if (rx - lx == 1) {
             if (lx < a.size())
                 SegData[ni] = Node(a[lx]);
@@ -50,11 +50,11 @@ struct SegTree {
         SegData[ni] = merge(SegData[2 * ni + 1], SegData[2 * ni + 2]);
     }
 
-    void init(vector<int> &a) {
+    void init(vector<ll> &a) {
         init(a,0,0,tree_size);
     }
 
-    void set(int idx, int val, int ni, int lx, int rx) {
+    void set(int idx, ll val, int ni, int lx, int rx) {
         if (rx - lx == 1) {
             SegData[ni].change(val);
             return;
@@ -71,7 +71,7 @@ struct SegTree {
         SegData[ni] = merge(SegData[2 * ni + 1],SegData[2 * ni + 2]);
     }
 
-    void set(int idx, int val) {
+    void set(int idx, ll val) {
         set(idx,val,0,0,tree_size);
     }
 
@@ -91,7 +91,7 @@ struct SegTree {
         return merge(lf,ri);
     }
 
-    int get(int l, int r) {
+    ll get(int l, int r) {
         return get(l,r,0,0,tree_size).sum;
     }
 };
@@ -99,7 +99,7 @@ struct SegTree {
 void solve() {
     int n;
     cin >> n;
-    vector<int> a(n);
+    vector<ll> a(n);
 
     for (int i = 0; i < n; i++) {
         cin >> a[i];
