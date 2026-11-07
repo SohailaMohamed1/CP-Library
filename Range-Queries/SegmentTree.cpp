@@ -1,7 +1,9 @@
 #include<bits/stdc++.h>
 using namespace std;
 using ll = long long;
-
+#define lNode (2 * ni + 1)
+#define rNode (2 * ni + 2)
+#define md (lx + (rx - lx) / 2)
 
 struct Node {
     ll sum;
@@ -21,13 +23,13 @@ struct Node {
 
 struct SegTree {
     int tree_size;
-    vector<Node> SegData;
+    vector<Node> node;
 
     SegTree(int n) {
         tree_size = 1;
         while (tree_size < n) tree_size *= 2;
 
-        SegData.assign(2 * tree_size, Node());
+        node.assign(2 * tree_size, Node());
     }
 
     Node merge(Node &lf, Node &ri) {
@@ -39,15 +41,14 @@ struct SegTree {
     void init(vector<ll> &a, int ni, int lx, int rx) {
         if (rx - lx == 1) {
             if (lx < a.size())
-                SegData[ni] = Node(a[lx]);
+                node[ni] = Node(a[lx]);
             return;
         }
+        
+        init(a, lNode, lx, md);
+        init(a, rNode, md, rx);
 
-        int mid = (lx + rx) / 2;
-        init(a, 2 * ni + 1, lx, mid);
-        init(a, 2 * ni + 2, mid, rx);
-
-        SegData[ni] = merge(SegData[2 * ni + 1], SegData[2 * ni + 2]);
+        node[ni] = merge(node[lNode], node[rNode]);
     }
 
     void init(vector<ll> &a) {
@@ -56,19 +57,18 @@ struct SegTree {
 
     void set(int idx, ll val, int ni, int lx, int rx) {
         if (rx - lx == 1) {
-            SegData[ni].change(val);
+            node[ni].change(val);
             return;
         }
-
-        int mid = (lx + rx) / 2;
-        if (idx < mid) {
-            set(idx,val,2 * ni + 1,lx,mid);
+        
+        if (idx < md) {
+            set(idx,val,lNode,lx,md);
         }
         else {
-            set(idx,val,2 * ni + 2,mid, rx);
+            set(idx,val,rNode,md, rx);
         }
 
-        SegData[ni] = merge(SegData[2 * ni + 1],SegData[2 * ni + 2]);
+        node[ni] = merge(node[lNode],node[rNode]);
     }
 
     void set(int idx, ll val) {
@@ -77,16 +77,15 @@ struct SegTree {
 
     Node get(int l, int r, int ni, int lx, int rx) {
         if (lx >= l && rx <= r) {
-            return SegData[ni];
+            return node[ni];
         }
 
         if (lx >= r || rx <= l) {
             return Node();
         }
-
-        int mid = (lx + rx) / 2;
-        Node lf = get(l, r,2 * ni + 1,lx,mid);
-        Node ri = get(l,r,2 * ni + 2,mid,rx);
+        
+        Node lf = get(l, r,lNode,lx,md);
+        Node ri = get(l,r,rNode,md,rx);
 
         return merge(lf,ri);
     }
